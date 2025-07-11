@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class HeroKnight : MonoBehaviour {
 
+    [SerializeField] float hp;
+    private float hpMax;
+    [SerializeField] Image hp_bar;
     [SerializeField] float      m_speed = 4.0f;
     [SerializeField] float      m_jumpForce = 7.5f;
     [SerializeField] float      m_rollForce = 6.0f;
@@ -38,6 +42,10 @@ public class HeroKnight : MonoBehaviour {
         m_wallSensorR2 = transform.Find("WallSensor_R2").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL1 = transform.Find("WallSensor_L1").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL2 = transform.Find("WallSensor_L2").GetComponent<Sensor_HeroKnight>();
+        hp = 100f;
+        hpMax = 100f;
+
+        Changehp(95);
     }
 
     // Update is called once per frame
@@ -97,7 +105,7 @@ public class HeroKnight : MonoBehaviour {
         m_animator.SetBool("WallSlide", m_isWallSliding);
 
         //Death
-        if (Input.GetKeyDown("e") && !m_rolling)
+        if (Input.GetKeyDown("k") && !m_rolling)
         {
             m_animator.SetBool("noBlood", m_noBlood);
             m_animator.SetTrigger("Death");
@@ -193,4 +201,19 @@ public class HeroKnight : MonoBehaviour {
             dust.transform.localScale = new Vector3(m_facingDirection, 1, 1);
         }
     }
+
+    private void Changehp(float damage)
+    {
+        if (damage < hp)
+        {
+            hp -= damage; // hp = hp - damage;
+            float ratio = hp / hpMax;
+            hp_bar.fillAmount = ratio; 
+        }
+        else
+        {
+            Debug.Log("game over");
+        }
+    }
+    
 }
